@@ -1,11 +1,7 @@
-name: Build Flutter Windows
+name: Build Windows Flutter App
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
 
 jobs:
   build-windows:
@@ -15,22 +11,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          flutter-version: 'stable'
+          distribution: temurin
+          java-version: '17'
 
-      - name: Enable Windows Desktop
-        run: flutter config --enable-windows-desktop
+      - name: Install Flutter manually
+        run: |
+          git clone https://github.com/flutter/flutter.git -b stable
+          echo "$env:GITHUB_WORKSPACE\flutter\bin" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
+
+      - name: Flutter doctor
+        run: flutter doctor
 
       - name: Get dependencies
         run: flutter pub get
 
       - name: Build Windows
-        run: flutter build windows --release
+        run: flutter build windows
 
-      - name: Upload build output
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: build/windows/runner/Release/
+          path: build/windows/x64/runner/Release/
