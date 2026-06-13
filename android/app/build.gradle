@@ -27,7 +27,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.example.resid_saz"
-    compileSdkVersion 33
+    compileSdkVersion 23
     ndkVersion flutter.ndkVersion
 
     compileOptions {
